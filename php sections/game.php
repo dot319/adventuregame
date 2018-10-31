@@ -8,10 +8,33 @@ $$name = new Adventurer($name);
 
 ?>
 
+<!---------------------------------- Header ---------------------------------------------->
+
 <div id="header">
     Welcome <?php echo($name); ?> | 
     <a href="loggedout.php">Log out</a>
 </div>
+
+<!---------------------------------- Combat ---------------------------------------------->
+
+<div id="combat">
+
+<?php
+if (isset($_POST['enemy'])) {
+    if ($_POST['enemy'] != "") {
+        $_SESSION['newEnemy'] = $_POST['enemy'];
+    }
+}
+
+if (isset($_SESSION['newEnemy'])) {
+    echo($_SESSION['newEnemy']);
+}
+
+?>
+
+</div>
+
+<!-------------------------------- Game screen ------------------------------------------->
 
 <div id="game-screen">
 
@@ -48,6 +71,8 @@ if (isset($_GET['button'])) {
 
 </div>
 
+<!-------------------------------- Interface ------------------------------------------->
+
 <div id="interface">
     <?php ${$name}->showStats()?>
     <div id="buttons">
@@ -58,6 +83,11 @@ if (isset($_GET['button'])) {
         <form action="<?php echo($_SERVER['PHP_SELF']); ?>?button=true" method="POST">
             <input type="hidden" name="button" value="rest_at_inn">
             <input type="submit" value="Rest at inn">
+        </form>
+        <form action="<?php echo($_SERVER['PHP_SELF']); ?>?button=true" method="POST">
+            <input type="hidden" name="button" value="lure_rat">
+            <input type="hidden" name="enemy" value="lvl1_rat">
+            <input type="submit" value="Lure rat">
         </form>
     </div>
 </div>

@@ -61,6 +61,18 @@
     margin: 10px;
 }
 
+#combat {
+    background-color: rgb(255, 255, 155);
+    padding: 10px;
+    margin: 10px;
+}
+
+#game-screen {
+    background-color: rgb(205, 205, 255);
+    padding: 10px;
+    margin: 10px;
+}
+
 #interface {
     background-color: rgb(129, 255, 135);
     padding: 10px;
@@ -71,10 +83,4 @@
 
 #interface div {
     margin: 5px;
-}
-
-#game-screen {
-    background-color: rgb(205, 205, 255);
-    padding: 10px;
-    margin: 10px;
 }
