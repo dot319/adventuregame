@@ -30,7 +30,7 @@ class Adventurer {
     public function saveStats() {
         require 'php sections/connect.php';
         $myQuery = "UPDATE Adventurers 
-        SET `HP` = $this->hp, `MaxHP` = $this->maxhp, `Currency` = $this->currency, `Attack` = $this->attack, `Defense` = $this->defense
+        SET `HP` = $this->hp, `MaxHP` = $this->maxhp, `Currency` = $this->currency, `Attack` = $this->attack, `Defense` = $this->defense, `Current_enemy` = $this->current_enemy
         WHERE `Name`='$this->name'";
         $conn->query($myQuery);
         $conn->close();
@@ -45,6 +45,7 @@ class Adventurer {
             <p>Currency: <?php echo($this->currency); ?></p>
             <p>Attack: <?php echo($this->attack); ?></p>
             <p>Defense: <?php echo($this->defense); ?></p>
+            <p>Current enemy id: <?php echo($this->current_enemy); ?></p>
         </div>
 
     <?php }
@@ -69,6 +70,16 @@ class Adventurer {
         } elseif ($this->currency < 15) {
             return "$this->name wanted to rest at the inn but doesn't have enough currency.<br />";
         } 
+    }
+
+    public function attack($enemy) {
+        $enemy->hp -= $this->attack;
+        if ($enemy->hp <= 0) {
+            $this->current_enemy = 0;
+            return "$this->name killed $enemy->name. Current enemy id is $this->current_enemy.<br />";
+        } else {
+            return "$this->name attacked $enemy->name and dealt $this->attack damage.<br />";
+        }        
     }
 
     public function meetNewEnemy($name, $level) {
@@ -96,7 +107,7 @@ class Adventurer {
         VALUES ('$this->advid', '$name', '$level', '$enHP', '$enHP', '$enAttack', '$enDefense', '$enExp')";
         $conn->query($myQuery);
 
-        //Get enemy ID from database
+        //Get enemy ID from database and set as current_enemy
         $myQuery = "SELECT `EnemyID` FROM Enemies 
         WHERE `UserID`='$this->advid' 
         ORDER BY `EnemyID` DESC
@@ -105,16 +116,11 @@ class Adventurer {
         while ($row = $myResult->fetch_assoc()) {
             $enID = $row['EnemyID'];
         }
-
-        //Store enemy ID in character table as current Enemy
-        $myQuery = "UPDATE adventurers
-        SET `Current_enemy`= $enID
-        WHERE `AdvID`=$this->advid";
-        $conn->query($myQuery);
+        $this->current_enemy = $enID;
 
         //Close connection
         $conn->close();
-        return "Met $name level $level.<br /> Stat multiplier is " . $multiplier . "<br /> New enemy uploaded to database.<br />";
+        return "Met $name level $level.<br /> Stat multiplier is " . $multiplier . "<br /> New enemy with id $enID uploaded to database.<br />";
     }
 
 }

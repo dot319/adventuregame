@@ -22,8 +22,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (empty(trim($_POST['confirm_password']))) {
         $confirm_password_error = "Please confirm your password";
     }
-    
-    //If username field is entered, check if username already exists
+
+    //If username doesn't contain weird symbols, check if username already exists
     if ($username_error ==  "") {
         $stmt = $conn->prepare("SELECT * FROM Adventurers WHERE `Name`=?");
         $stmt->bind_param("s", $username);
@@ -53,8 +53,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     //If all is well, entere data into database
     if ($username_error ==  "" && $password_error ==  "" && $confirm_password_error == "") {
-        $stmt = $conn->prepare("INSERT INTO Adventurers (`Name`, `HP`, `MaxHP`, `Currency`, `Attack`, `Defense`, `Password`)
-        VALUES (?, 100, 100, 0, 1, 1, ?)");
+        $stmt = $conn->prepare("INSERT INTO Adventurers (`Name`, `HP`, `MaxHP`, `Currency`, `Attack`, `Defense`, `Current_enemy`, `Password`)
+        VALUES (?, 100, 100, 0, 1, 1, 0, ?)");
         $stmt->bind_param("ss", $username, $password);
         $password = password_hash($password, PASSWORD_DEFAULT);
         if ($stmt->execute()) {

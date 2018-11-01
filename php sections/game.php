@@ -25,10 +25,9 @@ if (isset(${$name}->current_enemy)) {
 
 <!---------------------------------- Combat ---------------------------------------------->
 
-<div id="combat">
-
 <?php
-// If an enemy is lured, stored it in Session
+
+// If an enemy is lured, store it in Session
 if (isset($_POST['enemy'])) {
     if ($_POST['enemy'] != "") {
         $_SESSION['newEnemy'] = $_POST['enemy'];
@@ -48,14 +47,22 @@ if (isset($_SESSION['newEnemy'])) {;
     }
 }
 
-// If player is currently battling an enemy, show its stats
-if (isset($enemy)) {
-    $enemy->showStats();
-}
+// If player is currently battling an enemy, show combat div
+if (isset($enemy)) { ?>
 
-?>
+<div id="combat">
+
+    <?php $enemy->showStats(); ?>
+    <div id="buttons">
+        <form action="<?php echo($_SERVER['PHP_SELF']); ?>?button=true" method="POST">
+            <input type="hidden" name="button" value="attack">
+            <input type="submit" value="Attack">
+        </form>
+    </div>
 
 </div>
+
+<?php } ?>
 
 <!-------------------------------- Game screen ------------------------------------------->
 
@@ -73,6 +80,8 @@ if (isset($_GET['button'])) {
             case 'rest_at_inn':
             $_SESSION['message'] = ${$name}->restAtInn();
             break;
+            case 'attack':
+            $_SESSION['message'] = ${$name}->attack($enemy);
         }
     }
 }
@@ -100,7 +109,7 @@ if (isset($_GET['button'])) {
 <!-------------------------------- Interface ------------------------------------------->
 
 <div id="interface">
-    <?php ${$name}->showStats()?>
+    <?php ${$name}->showStats(); ?>
     <div id="buttons">
         <form action="<?php echo($_SERVER['PHP_SELF']); ?>?button=true" method="POST">
             <input type="hidden" name="button" value="work_at_farm">
