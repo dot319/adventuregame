@@ -46,7 +46,27 @@ class Enemy {
             <p>Defense: <?php echo($this->defense); ?></p>
         </div>
         
-            <?php }
+    <?php }
+
+    public function attack($player) {
+        $defense = 1 * pow(0.98, $player->defense - 1);
+        $attack = round($defense * $this->attack);
+        if ($attack < 1) {
+            $attack = 1;
+        }
+        $player->hp -= $attack;
+        return "$this->name attacked $player->name and dealt $attack damage.<br />";
+    }
+
+    public function delete() {
+        require 'php sections/connect.php';
+        $myQuery = "SELECT * FROM Enemies WHERE `EnemyID` = $this->enemyid";
+        $myResult = $conn->query($myQuery);
+        if ($myResult->num_rows > 0) {
+            $myQuery = "DELETE FROM Enemies WHERE `EnemyID` = $this->enemyid";
+            $conn->query($myQuery);
+        }
+    }
 
 }
 

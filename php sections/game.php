@@ -84,11 +84,19 @@ if (isset($_GET['button'])) {
             $_SESSION['message'] = ${$name}->attack($enemy);
         }
     }
+    if (isset($enemy)) {
+        $_SESSION['enemy_message'] = $enemy->attack(${$name});
+    }
 }
 
 // Print to screen what happened
 if (isset($_SESSION['message'])) {
     echo($_SESSION['message']);
+}
+if (isset($enemy)) {
+    if (isset($_SESSION['enemy_message'])) {
+        echo($_SESSION['enemy_message']);
+    }
 }
 
 // Save stats to database

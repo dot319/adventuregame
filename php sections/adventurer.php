@@ -73,14 +73,14 @@ class Adventurer {
     }
 
     public function attack($enemy) {
-        // Get enemy defense
-        $defense = 1 * pow(0.09, $enemy->defense - 1);
+        $defense = 1 * pow(0.98, $enemy->defense - 1);
         $attack = round($defense * $this->attack);
         if ($attack < 1) {
             $attack = 1;
         }
         $enemy->hp -= $attack;
         if ($enemy->hp <= 0) {
+            $enemy->delete();
             $this->current_enemy = 0;
             return "$this->name killed $enemy->name. Current enemy id is $this->current_enemy.<br />";
         } else {
