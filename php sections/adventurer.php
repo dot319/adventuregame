@@ -34,18 +34,18 @@ class Adventurer {
         WHERE `Name`='$this->name'";
         $conn->query($myQuery);
         $conn->close();
-        echo("Gamestate saved.");
+        echo("$this->name's gamestate saved.<br />");
     }
 
     public function showStats() { ?>
 
-<div id="playerstats">
-    <p>Name: <?php echo("$this->name"); ?></p>
-    <p>HP: <?php echo("$this->hp/$this->maxhp"); ?></p>
-    <p>Currency: <?php echo($this->currency); ?></p>
-    <p>Attack: <?php echo($this->attack); ?></p>
-    <p>Defense: <?php echo($this->defense); ?></p>
-</div>
+        <div id="playerstats">
+            <p>Name: <?php echo("$this->name"); ?></p>
+            <p>HP: <?php echo("$this->hp/$this->maxhp"); ?></p>
+            <p>Currency: <?php echo($this->currency); ?></p>
+            <p>Attack: <?php echo($this->attack); ?></p>
+            <p>Defense: <?php echo($this->defense); ?></p>
+        </div>
 
     <?php }
 
