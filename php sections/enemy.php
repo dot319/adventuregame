@@ -40,6 +40,7 @@ class Enemy {
 
         <div id="enemystats">
             <p>Name: <?php echo("$this->name"); ?></p>
+            <p>Level: <?php echo("$this->level"); ?></p>
             <p>HP: <?php echo("$this->hp/$this->maxhp"); ?></p>
             <p>Attack: <?php echo($this->attack); ?></p>
             <p>Defense: <?php echo($this->defense); ?></p>
