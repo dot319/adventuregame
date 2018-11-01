@@ -99,6 +99,7 @@ if (isset($enemy)) {
     }
 }
 
+
 // Save stats to database
 ${$name}->saveStats();
 if (isset($enemy)) {

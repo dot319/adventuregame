@@ -3,6 +3,9 @@
 class Adventurer {
     public $advid;
     public $name;
+    public $experience;
+    public $nlExperience;
+    public $level;
     public $hp;
     public $maxhp;
     public $currency;
@@ -17,6 +20,8 @@ class Adventurer {
         $myResult = $conn->query($myQuery);
         while ($row = $myResult->fetch_assoc()) {
             $this->advid = $row['AdvID'];
+            $this->experience = $row['Experience'];
+            // $this->level = $this->calculateLevel();
             $this->hp = $row['HP'];
             $this->maxhp = $row['MaxHP'];
             $this->currency = $row['Currency'];
@@ -24,13 +29,60 @@ class Adventurer {
             $this->defense = $row['Defense'];
             $this->current_enemy = $row['Current_enemy'];
         }
+        $this->calculateLevel();
         $conn->close();
+    }
+
+    public function calculateLevel() {
+        $exp = $this->experience;
+        switch (true) {
+            case ($exp < 100):
+            $this->level = 1;
+            $this->nlExperience = 100;
+            break;
+            case ($exp < 250):
+            $this->level = 2;
+            $this->nlExperience = 250;
+            break;
+            case ($exp < 600):
+            $this->level = 3;
+            $this->nlExperience = 600;
+            break;
+            case ($exp < 1500):
+            $this->level = 4;
+            $this->nlExperience = 1500;
+            break;
+            case ($exp < 4000):
+            $this->level = 5;
+            $this->nlExperience = 4000;
+            break;
+            case ($exp < 10000):
+            $this->level = 6;
+            $this->nlExperience = 10000;
+            break;
+            case ($exp < 25000):
+            $this->level = 7;
+            $this->nlExperience = 25000;
+            break;
+            case ($exp < 60000):
+            $this->level = 8;
+            $this->nlExperience = 60000;
+            break;
+            case ($exp < 150000):
+            $this->level = 9;
+            $this->nlExperience = 150000;
+            break;
+            case ($exp >= 150000):
+            $this->level = 10;
+            $this->nlExperience = "Maxlevel";
+            break;
+        }
     }
 
     public function saveStats() {
         require 'php sections/connect.php';
         $myQuery = "UPDATE Adventurers 
-        SET `HP` = $this->hp, `MaxHP` = $this->maxhp, `Currency` = $this->currency, `Attack` = $this->attack, `Defense` = $this->defense, `Current_enemy` = $this->current_enemy
+        SET `HP` = $this->hp, `MaxHP` = $this->maxhp, `Currency` = $this->currency, `Attack` = $this->attack, `Defense` = $this->defense, `Current_enemy` = $this->current_enemy, `Experience` = $this->experience
         WHERE `Name`='$this->name'";
         $conn->query($myQuery);
         $conn->close();
@@ -41,14 +93,25 @@ class Adventurer {
 
         <div id="playerstats">
             <p>Name: <?php echo("$this->name"); ?></p>
+            <p>Level: <?php echo("$this->level"); ?></p>
             <p>HP: <?php echo("$this->hp/$this->maxhp"); ?></p>
+            <p>Exp: <?php echo("$this->experience/$this->nlExperience"); ?></p>
             <p>Currency: <?php echo($this->currency); ?></p>
             <p>Attack: <?php echo($this->attack); ?></p>
             <p>Defense: <?php echo($this->defense); ?></p>
-            <p>Current enemy id: <?php echo($this->current_enemy); ?></p>
         </div>
 
     <?php }
+
+    public function youDied() {
+        $this->hp = 100;
+        $this->maxhp = 100;
+        $this->currency = 0;
+        $this->attack = 1;
+        $this->defense = 1;
+        $this->current_enemy = 0;
+        $_SESSION['message'] = "$this->name died. Game over.<br />";
+    }
 
     public function workAtFarm() {
         if ($this->hp >= 5) {
@@ -82,7 +145,8 @@ class Adventurer {
         if ($enemy->hp <= 0) {
             $enemy->delete();
             $this->current_enemy = 0;
-            return "$this->name killed $enemy->name. Current enemy id is $this->current_enemy.<br />";
+            $this->experience += $enemy->exp;
+            return "$this->name killed $enemy->name. Gained $enemy->exp XP.<br />";
         } else {
             return "$this->name attacked $enemy->name and dealt $this->attack damage.<br />";
         }        

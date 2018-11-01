@@ -55,7 +55,12 @@ class Enemy {
             $attack = 1;
         }
         $player->hp -= $attack;
-        return "$this->name attacked $player->name and dealt $attack damage.<br />";
+        if ($player->hp <= 0) {
+            $player->youDied();
+            $this->delete();
+        } else {
+            return "$this->name attacked $player->name and dealt $attack damage.<br />";
+        }
     }
 
     public function delete() {

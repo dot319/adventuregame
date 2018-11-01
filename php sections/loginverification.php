@@ -64,6 +64,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         session_start();
         $_SESSION['UserID'] = $userID;
         $_SESSION['Username'] = $username;
+        $_SESSION['gameover'] = "";
         header('location: startgame.php');
     }
 }
