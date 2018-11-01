@@ -1,10 +1,18 @@
 <?php 
 
 require 'php sections/adventurer.php';
+require 'php sections/enemy.php';
 
-// Create adventurer from database stats
+// Create player adventurer from database stats
 $name = $_SESSION['Username']; 
 $$name = new Adventurer($name);
+
+// Create enemy (if player is currently battling one)
+if (isset(${$name}->current_enemy)) {
+    if (${$name}->current_enemy != 0) {
+        $enemy = new Enemy(${$name}->current_enemy);
+    }
+}
 
 ?>
 
@@ -20,14 +28,29 @@ $$name = new Adventurer($name);
 <div id="combat">
 
 <?php
+// If an enemy is lured, stored it in Session
 if (isset($_POST['enemy'])) {
     if ($_POST['enemy'] != "") {
         $_SESSION['newEnemy'] = $_POST['enemy'];
     }
 }
 
-if (isset($_SESSION['newEnemy'])) {
-    echo($_SESSION['newEnemy']);
+// If an enemy is stored in Session, create it unless player is already in battle 
+if (isset($_SESSION['newEnemy'])) {;
+    if ($_SESSION['newEnemy'] != "") {
+        if (!isset($enemy)) {
+            $_SESSION['message'] = ${$name}->meetNewEnemy("Rat", 1);
+            $_SESSION['newEnemy'] = "";
+        } else {
+            $_SESSION['message'] = "You're already in battle.<br />";
+            $_SESSION['newEnemy'] = "";
+        }
+    }
+}
+
+// If player is currently battling an enemy, show its stats
+if (isset($enemy)) {
+    $enemy->showStats();
 }
 
 ?>
@@ -61,6 +84,9 @@ if (isset($_SESSION['message'])) {
 
 // Save stats to database
 ${$name}->saveStats();
+if (isset($enemy)) {
+    $enemy->saveStats();
+}
 
 // Unset $_GET['button'] so refreshing the page won't repeat the last action
 if (isset($_GET['button'])) {
